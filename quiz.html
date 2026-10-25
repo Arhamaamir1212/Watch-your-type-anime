@@ -1,0 +1,638 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FIND YOUR TYPE | WATCH YOUR TYPE ANIME</title>
+
+<style>
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+:root {
+    --purple: #a855f7;
+    --blue: #00d9ff;
+    --pink: #ff36d7;
+    --bg: #070610;
+}
+
+body {
+    min-height: 100vh;
+    background: var(--bg);
+    color: white;
+    font-family: Arial, sans-serif;
+    overflow-x: hidden;
+}
+
+body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    background:
+        radial-gradient(ellipse at 15% 20%, #5312a52b, transparent 45%),
+        radial-gradient(ellipse at 85% 75%, #005eff20, transparent 45%);
+    z-index: -1;
+}
+
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 15px;
+    padding: 22px 7%;
+    border-bottom: 1px solid #a855f733;
+    background: #080612d9;
+}
+
+.logo {
+    font-size: clamp(16px, 3vw, 23px);
+    font-weight: 900;
+    letter-spacing: 2px;
+    color: white;
+    text-shadow: 0 0 15px var(--purple);
+}
+
+.logo span {
+    color: var(--blue);
+}
+
+header a {
+    color: white;
+    text-decoration: none;
+    border: 1px solid var(--purple);
+    border-radius: 9px;
+    padding: 10px 15px;
+    transition: .25s;
+}
+
+header a:hover {
+    background: var(--purple);
+    box-shadow: 0 0 20px var(--purple);
+}
+
+main {
+    width: min(850px, 92%);
+    margin: 45px auto;
+}
+
+.hero {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.tag {
+    display: inline-block;
+    border: 1px solid #a855f766;
+    color: var(--blue);
+    border-radius: 30px;
+    padding: 8px 15px;
+    font-size: 12px;
+    letter-spacing: 3px;
+    margin-bottom: 17px;
+}
+
+h1 {
+    font-size: clamp(32px, 7vw, 58px);
+    font-weight: 1000;
+    letter-spacing: 2px;
+    line-height: 1.1;
+}
+
+h1 span {
+    color: var(--purple);
+    text-shadow: 0 0 25px #a855f799;
+}
+
+.hero p {
+    color: #aaa7bd;
+    margin-top: 15px;
+    line-height: 1.7;
+}
+
+.quiz-box {
+    border: 1px solid #a855f755;
+    background: linear-gradient(145deg, #151022ed, #090914f5);
+    border-radius: 20px;
+    padding: clamp(20px, 5vw, 38px);
+    box-shadow: 0 0 45px #7c3aed13;
+}
+
+.quiz-top {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    color: #aaa7bd;
+    font-size: 13px;
+    margin-bottom: 12px;
+}
+
+.progress-track {
+    height: 7px;
+    background: #29233a;
+    border-radius: 20px;
+    overflow: hidden;
+    margin-bottom: 30px;
+}
+
+.progress {
+    width: 0%;
+    height: 100%;
+    border-radius: 20px;
+    background: linear-gradient(90deg, var(--purple), var(--blue));
+    box-shadow: 0 0 15px var(--purple);
+    transition: width .35s ease;
+}
+
+.question {
+    font-size: clamp(22px, 4vw, 30px);
+    margin-bottom: 23px;
+    line-height: 1.3;
+}
+
+.answers {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 13px;
+}
+
+.answer {
+    text-align: left;
+    min-height: 86px;
+    padding: 18px;
+    background: #ffffff06;
+    border: 1px solid #ffffff1c;
+    border-radius: 13px;
+    color: white;
+    font-size: 15px;
+    line-height: 1.5;
+    cursor: pointer;
+    transition: .25s;
+}
+
+.answer:hover {
+    border-color: var(--blue);
+    background: #00d9ff10;
+    transform: translateY(-3px);
+}
+
+.answer.selected {
+    border-color: var(--purple);
+    background: #a855f722;
+    box-shadow: 0 0 18px #a855f72b;
+}
+
+.emoji {
+    display: block;
+    font-size: 27px;
+    margin-bottom: 8px;
+}
+
+.controls {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    margin-top: 25px;
+}
+
+.btn {
+    padding: 12px 19px;
+    border-radius: 9px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: bold;
+    transition: .25s;
+}
+
+.btn-back {
+    background: transparent;
+    color: #ccc5e1;
+    border: 1px solid #ffffff30;
+}
+
+.btn-next {
+    background: linear-gradient(100deg, var(--purple), #6136e8);
+    color: white;
+    border: none;
+    box-shadow: 0 0 17px #a855f733;
+}
+
+.btn-next:hover {
+    box-shadow: 0 0 25px #a855f777;
+    transform: translateY(-2px);
+}
+
+.btn:disabled {
+    opacity: .35;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.result {
+    text-align: center;
+    animation: appear .6s ease;
+}
+
+.result-icon {
+    font-size: 65px;
+    margin-bottom: 15px;
+}
+
+.result h2 {
+    font-size: clamp(28px, 6vw, 42px);
+    color: var(--blue);
+    margin-bottom: 12px;
+}
+
+.result p {
+    color: #c5c0d8;
+    line-height: 1.7;
+}
+
+.result h3 {
+    margin: 30px 0 15px;
+    font-size: 20px;
+}
+
+.recommendations {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+    gap: 13px;
+    text-align: left;
+    margin-bottom: 25px;
+}
+
+.anime-card {
+    border: 1px solid #a855f74d;
+    border-radius: 13px;
+    padding: 17px;
+    background: #ffffff07;
+}
+
+.anime-card .poster {
+    font-size: 35px;
+    margin-bottom: 10px;
+}
+
+.anime-card strong {
+    display: block;
+    margin-bottom: 8px;
+    color: white;
+}
+
+.anime-card small {
+    color: #aaa7bd;
+    line-height: 1.5;
+}
+
+.result-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 12px;
+}
+
+.hidden {
+    display: none !important;
+}
+
+footer {
+    text-align: center;
+    color: #716c86;
+    padding: 10px 15px 30px;
+    font-size: 12px;
+}
+
+@keyframes appear {
+    from { opacity: 0; transform: translateY(12px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@media (max-width: 560px) {
+    header { padding: 17px 4%; }
+    .answers { grid-template-columns: 1fr; }
+    .answer { min-height: 65px; }
+    main { margin-top: 30px; }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+    <div class="logo">WATCH YOUR <span>TYPE</span></div>
+    <a href="index.html">← HOME</a>
+</header>
+
+<main>
+    <section class="hero">
+        <div class="tag">✦ ANIME PERSONALITY SCANNER ✦</div>
+        <h1>FIND YOUR <span>TYPE</span></h1>
+        <p>Answer 5 questions. Discover your anime vibe.<br>
+        Your next favourite anime might be waiting for you.</p>
+    </section>
+
+    <section class="quiz-box" id="quizBox">
+        <div id="questionScreen">
+            <div class="quiz-top">
+                <span id="questionNumber">QUESTION 1 / 5</span>
+                <span id="progressText">0% COMPLETE</span>
+            </div>
+
+            <div class="progress-track">
+                <div class="progress" id="progress"></div>
+            </div>
+
+            <h2 class="question" id="questionText"></h2>
+            <div class="answers" id="answers"></div>
+
+            <div class="controls">
+                <button class="btn btn-back" id="backBtn" type="button">
+                    ← BACK
+                </button>
+                <button class="btn btn-next" id="nextBtn" type="button" disabled>
+                    NEXT →
+                </button>
+            </div>
+        </div>
+
+        <div class="result hidden" id="resultScreen">
+            <div class="result-icon" id="resultIcon">⚡</div>
+            <div class="tag">YOUR ANIME PROFILE</div>
+            <h2 id="resultTitle"></h2>
+            <p id="resultDescription"></p>
+
+            <h3>YOUR ANIME MATCHES</h3>
+            <div class="recommendations" id="recommendations"></div>
+
+            <p style="font-size:12px; margin-bottom:24px">
+                Recommendations are based on your answers.
+                Age ratings and content can vary by title.
+            </p>
+
+            <div class="result-buttons">
+                <button class="btn btn-next" id="retakeBtn" type="button">
+                    ↻ RETAKE QUIZ
+                </button>
+                <a href="index.html" class="btn btn-back"
+                   style="text-decoration:none">
+                    ← BACK TO HOME
+                </a>
+            </div>
+        </div>
+    </section>
+</main>
+
+<footer>
+    WATCH YOUR TYPE ANIME · DISCOVER YOUR NEXT ADVENTURE
+</footer>
+
+<script>
+const questions = [
+    {
+        question: "What's your ultimate anime vibe?",
+        answers: [
+            { emoji: "⚔️", text: "Epic fights and powerful rivals", type: "action" },
+            { emoji: "🔮", text: "Magic and mysterious worlds", type: "fantasy" },
+            { emoji: "🧠", text: "Mind games and plot twists", type: "mystery" },
+            { emoji: "🌸", text: "Friends, comedy and chill moments", type: "chill" }
+        ]
+    },
+    {
+        question: "Choose your dream ability.",
+        answers: [
+            { emoji: "🔥", text: "Unstoppable battle power", type: "action" },
+            { emoji: "🐉", text: "Control magic and mythical creatures", type: "fantasy" },
+            { emoji: "👁️", text: "Predict everyone's next move", type: "mystery" },
+            { emoji: "✨", text: "Make everyone around me happy", type: "chill" }
+        ]
+    },
+    {
+        question: "Pick your perfect anime setting.",
+        answers: [
+            { emoji: "🏟️", text: "A world full of intense battles", type: "action" },
+            { emoji: "🏰", text: "A huge fantasy kingdom", type: "fantasy" },
+            { emoji: "🌃", text: "A city hiding dark secrets", type: "mystery" },
+            { emoji: "🏫", text: "A school full of fun characters", type: "chill" }
+        ]
+    },
+    {
+        question: "What makes a main character awesome?",
+        answers: [
+            { emoji: "💪", text: "Never giving up and getting stronger", type: "action" },
+            { emoji: "🗺️", text: "Exploring the unknown", type: "fantasy" },
+            { emoji: "♟️", text: "Being clever and unpredictable", type: "mystery" },
+            { emoji: "💖", text: "Being kind and loyal to friends", type: "chill" }
+        ]
+    },
+    {
+        question: "Pick your ideal anime weekend.",
+        answers: [
+            { emoji: "⚡", text: "Binge an action-packed saga", type: "action" },
+            { emoji: "🌌", text: "Get lost in another world", type: "fantasy" },
+            { emoji: "🕵️", text: "Solve a mystery before the reveal", type: "mystery" },
+            { emoji: "🍜", text: "Laugh with lovable characters", type: "chill" }
+        ]
+    }
+];
+
+const profiles = {
+    action: {
+        icon: "⚔️",
+        title: "THE ACTION BEAST",
+        description: "You love intense challenges, powerful characters and unforgettable battles. You want stories that keep your energy level at maximum.",
+        anime: [
+            { icon: "🥊", title: "My Hero Academia", note: "Superpowers, heroes and determination." },
+            { icon: "🏴‍☠️", title: "One Piece", note: "Adventure, friendship and epic battles." },
+            { icon: "🔥", title: "Demon Slayer", note: "Stylish action and a powerful journey." }
+        ]
+    },
+    fantasy: {
+        icon: "🔮",
+        title: "THE FANTASY EXPLORER",
+        description: "You love discovering strange worlds, incredible powers and adventures beyond imagination. Ordinary worlds aren't enough for you!",
+        anime: [
+            { icon: "🧝", title: "Frieren: Beyond Journey's End", note: "A thoughtful fantasy adventure." },
+            { icon: "🛡️", title: "Delicious in Dungeon", note: "Fantasy exploration with comedy." },
+            { icon: "🌊", title: "One Piece", note: "A massive world full of discoveries." }
+        ]
+    },
+    mystery: {
+        icon: "🧠",
+        title: "THE MYSTERY MASTER",
+        description: "You notice details, enjoy clever strategies and love stories that make you think. You want every clue to matter!",
+        anime: [
+            { icon: "📓", title: "Death Note", note: "A supernatural psychological thriller." },
+            { icon: "🧩", title: "The Apothecary Diaries", note: "Intrigue, mysteries and clever deductions." },
+            { icon: "🕵️", title: "Detective Conan", note: "Cases packed with clues and puzzles." }
+        ]
+    },
+    chill: {
+        icon: "🌸",
+        title: "THE CHILL VIBE MASTER",
+        description: "You appreciate funny moments, memorable friendships and characters you can relax with. A great story doesn't always need a huge battle!",
+        anime: [
+            { icon: "🍱", title: "Spy x Family", note: "Comedy, action and unusual family life." },
+            { icon: "🎨", title: "K-On!", note: "Music, friendship and cozy comedy." },
+            { icon: "🍃", title: "Natsume's Book of Friends", note: "Gentle supernatural stories." }
+        ]
+    }
+};
+
+const types = ["action", "fantasy", "mystery", "chill"];
+let currentQuestion = 0;
+let selectedAnswers = Array(questions.length).fill(null);
+
+const questionNumber = document.getElementById("questionNumber");
+const progressText = document.getElementById("progressText");
+const progress = document.getElementById("progress");
+const questionText = document.getElementById("questionText");
+const answersBox = document.getElementById("answers");
+const nextBtn = document.getElementById("nextBtn");
+const backBtn = document.getElementById("backBtn");
+const questionScreen = document.getElementById("questionScreen");
+const resultScreen = document.getElementById("resultScreen");
+
+function renderQuestion() {
+    const q = questions[currentQuestion];
+
+    questionNumber.textContent =
+        `QUESTION ${currentQuestion + 1} / ${questions.length}`;
+
+    const percent = Math.round((currentQuestion / questions.length) * 100);
+    progress.style.width = percent + "%";
+    progressText.textContent = percent + "% COMPLETE";
+
+    questionText.textContent = q.question;
+    answersBox.innerHTML = "";
+
+    q.answers.forEach((answer, index) => {
+        const button = document.createElement("button");
+        button.type = "button";
+        button.className = "answer";
+
+        if (selectedAnswers[currentQuestion] === answer.type) {
+            button.classList.add("selected");
+        }
+
+        const emoji = document.createElement("span");
+        emoji.className = "emoji";
+        emoji.textContent = answer.emoji;
+
+        const text = document.createElement("span");
+        text.textContent = answer.text;
+
+        button.append(emoji, text);
+
+        button.addEventListener("click", () => {
+            selectedAnswers[currentQuestion] = answer.type;
+            renderQuestion();
+        });
+
+        answersBox.appendChild(button);
+    });
+
+    backBtn.disabled = currentQuestion === 0;
+    nextBtn.disabled = selectedAnswers[currentQuestion] === null;
+
+    nextBtn.textContent =
+        currentQuestion === questions.length - 1
+            ? "REVEAL MY TYPE ⚡"
+            : "NEXT →";
+}
+
+function showResult() {
+    const scores = { action: 0, fantasy: 0, mystery: 0, chill: 0 };
+
+    selectedAnswers.forEach(type => {
+        if (type) scores[type]++;
+    });
+
+    const highestScore = Math.max(...Object.values(scores));
+    const tiedTypes = types.filter(type => scores[type] === highestScore);
+
+    // Resolve ties consistently using the most recent answer
+    // that belongs to one of the tied types.
+    let winningType = tiedTypes[0];
+
+    for (let i = selectedAnswers.length - 1; i >= 0; i--) {
+        if (tiedTypes.includes(selectedAnswers[i])) {
+            winningType = selectedAnswers[i];
+            break;
+        }
+    }
+
+    const profile = profiles[winningType];
+
+    document.getElementById("resultIcon").textContent = profile.icon;
+    document.getElementById("resultTitle").textContent = profile.title;
+    document.getElementById("resultDescription").textContent = profile.description;
+
+    const recommendations = document.getElementById("recommendations");
+    recommendations.innerHTML = "";
+
+    profile.anime.forEach(anime => {
+        const card = document.createElement("article");
+        card.className = "anime-card";
+
+        const icon = document.createElement("div");
+        icon.className = "poster";
+        icon.textContent = anime.icon;
+
+        const title = document.createElement("strong");
+        title.textContent = anime.title;
+
+        const note = document.createElement("small");
+        note.textContent = anime.note;
+
+        card.append(icon, title, note);
+        recommendations.appendChild(card);
+    });
+
+    questionScreen.classList.add("hidden");
+    resultScreen.classList.remove("hidden");
+    progress.style.width = "100%";
+    progressText.textContent = "100% COMPLETE";
+    questionNumber.textContent = "QUIZ COMPLETE";
+
+    window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
+nextBtn.addEventListener("click", () => {
+    if (selectedAnswers[currentQuestion] === null) return;
+
+    if (currentQuestion < questions.length - 1) {
+        currentQuestion++;
+        renderQuestion();
+    } else {
+        showResult();
+    }
+});
+
+backBtn.addEventListener("click", () => {
+    if (currentQuestion > 0) {
+        currentQuestion--;
+        renderQuestion();
+    }
+});
+
+document.getElementById("retakeBtn").addEventListener("click", () => {
+    currentQuestion = 0;
+    selectedAnswers = Array(questions.length).fill(null);
+
+    resultScreen.classList.add("hidden");
+    questionScreen.classList.remove("hidden");
+
+    renderQuestion();
+    window.scrollTo({ top: 0, behavior: "smooth" });
+});
+
+renderQuestion();
+</script>
+
+</body>
+</html>

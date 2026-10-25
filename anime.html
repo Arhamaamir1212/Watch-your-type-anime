@@ -1,0 +1,655 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="referrer" content="strict-origin-when-cross-origin">
+<title>WATCH YOUR TYPE ANIME | Video Player</title>
+
+<style>
+:root {
+  --bg: #080b16;
+  --panel: #11182a;
+  --cyan: #00f5ff;
+  --purple: #a855f7;
+  --white: #f5f7ff;
+  --muted: #a9b4cc;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  min-height: 100vh;
+  background: radial-gradient(ellipse at top, #21113e 0%, transparent 55%), var(--bg);
+  color: var(--white);
+  font-family: Arial, sans-serif;
+}
+
+header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 15px;
+  padding: 20px 5%;
+  border-bottom: 1px solid #29334c;
+  background: #080b16dd;
+}
+
+.logo {
+  font-size: 21px;
+  font-weight: 900;
+  color: var(--cyan);
+  text-decoration: none;
+  text-shadow: 0 0 14px #00f5ff55;
+}
+
+nav {
+  display: flex;
+  gap: 18px;
+  flex-wrap: wrap;
+}
+
+nav a {
+  color: var(--white);
+  text-decoration: none;
+  font-size: 14px;
+}
+
+nav a:hover { color: var(--cyan); }
+
+main {
+  width: min(1100px, 92%);
+  margin: 30px auto;
+}
+
+.back {
+  display: inline-block;
+  margin-bottom: 20px;
+  padding: 10px 14px;
+  background: #202a41;
+  border-radius: 9px;
+  color: white;
+  text-decoration: none;
+}
+
+h1 {
+  font-size: clamp(26px, 5vw, 40px);
+  margin-bottom: 10px;
+}
+
+h2 {
+  font-size: 21px;
+  margin-bottom: 14px;
+}
+
+p {
+  color: var(--muted);
+  line-height: 1.6;
+}
+
+.player-card, .episodes-card, .info-card {
+  padding: 22px;
+  margin-bottom: 22px;
+  background: #11182aef;
+  border: 1px solid #303b58;
+  border-radius: 18px;
+}
+
+.video-frame {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  background: #000;
+  overflow: hidden;
+  border-radius: 13px;
+  border: 1px solid #37435f;
+  margin: 18px 0;
+}
+
+video, iframe {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border: 0;
+  background: #000;
+}
+
+video { object-fit: contain; }
+
+.hidden { display: none !important; }
+
+.player-status {
+  margin-top: 10px;
+  font-size: 14px;
+  overflow-wrap: anywhere;
+}
+
+.controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  margin-top: 15px;
+}
+
+button, .file-label {
+  padding: 12px 16px;
+  border: 0;
+  border-radius: 9px;
+  background: linear-gradient(110deg, var(--cyan), #8b83ff);
+  color: #06101b;
+  font-weight: bold;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+button:hover, .file-label:hover { filter: brightness(1.1); }
+
+button.secondary {
+  background: #26324c;
+  color: white;
+  border: 1px solid #45516c;
+}
+
+button:focus-visible, a:focus-visible, input:focus-visible {
+  outline: 2px solid var(--cyan);
+  outline-offset: 3px;
+}
+
+input[type="url"], input[type="text"] {
+  width: 100%;
+  min-width: 0;
+  padding: 13px;
+  color: white;
+  background: #080d1b;
+  border: 1px solid #384560;
+  border-radius: 9px;
+  font-size: 14px;
+}
+
+label {
+  display: block;
+  margin: 15px 0 7px;
+  font-size: 14px;
+  color: #d9e2ff;
+}
+
+.episodes {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 12px;
+  margin-top: 16px;
+}
+
+.episode {
+  text-align: left;
+  padding: 15px;
+  color: white;
+  background: #1a2339;
+  border: 1px solid #35415f;
+  border-radius: 12px;
+  cursor: pointer;
+}
+
+.episode.active {
+  border-color: var(--cyan);
+  box-shadow: 0 0 14px #00f5ff25;
+}
+
+.episode small {
+  display: block;
+  color: var(--muted);
+  margin-top: 6px;
+  font-weight: normal;
+}
+
+.notice {
+  padding: 14px;
+  margin-top: 15px;
+  background: #102936;
+  border-left: 4px solid var(--cyan);
+  border-radius: 8px;
+  font-size: 14px;
+  color: #d9faff;
+  line-height: 1.6;
+}
+
+footer {
+  text-align: center;
+  padding: 25px 12px;
+  border-top: 1px solid #29334c;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+@media (max-width: 600px) {
+  header { padding: 17px 4%; }
+  .logo { font-size: 18px; }
+  .player-card, .episodes-card, .info-card { padding: 15px; }
+  .controls button, .file-label {
+    flex: 1;
+    text-align: center;
+  }
+}
+</style>
+</head>
+
+<body>
+<header>
+  <a class="logo" href="index.html">WATCH YOUR TYPE ANIME</a>
+  <nav>
+    <a href="index.html">Home</a>
+    <a href="index.html#discover">Discover</a>
+    <a href="index.html#watchlist">Watchlist</a>
+  </nav>
+</header>
+
+<main>
+  <a class="back" href="index.html">← Back to Anime</a>
+
+  <section class="player-card">
+    <h1 id="animeTitle">Anime Video Player</h1>
+    <p id="episodeTitle">Demo Episode · Test the player below</p>
+
+    <div class="video-frame">
+      <video id="videoPlayer" controls playsinline preload="metadata">
+        Your browser does not support HTML video.
+      </video>
+
+      <iframe
+        id="youtubePlayer"
+        class="hidden"
+        title="YouTube video player"
+        src="about:blank"
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+        referrerpolicy="strict-origin-when-cross-origin"
+        allowfullscreen>
+      </iframe>
+    </div>
+
+    <p class="player-status" id="playerStatus" role="status" aria-live="polite">
+      Ready to play the demo.
+    </p>
+
+    <div class="controls">
+      <button id="previousButton" class="secondary">⏮ Previous</button>
+      <button id="playButton">▶ Play</button>
+      <button id="nextButton" class="secondary">Next ⏭</button>
+    </div>
+
+    <div class="notice">
+      Demo mode: the sample is a public test video, not an anime episode.
+      Add a direct video link or a YouTube video that permits embedding.
+      Only stream content you own or are authorized to use.
+    </div>
+  </section>
+
+  <section class="episodes-card">
+    <h2>📺 Episodes</h2>
+    <p>Choose a demo episode or add your own authorized video links.</p>
+
+    <div class="episodes" id="episodeList"></div>
+
+    <div class="controls">
+      <button id="addEpisodeButton">＋ Add Video Link</button>
+      <button id="clearCustomButton" class="secondary">Clear My Links</button>
+    </div>
+
+    <div id="customEpisodeForm" class="hidden">
+      <label for="customEpisodeName">Episode name</label>
+      <input id="customEpisodeName" type="text" maxlength="100"
+        placeholder="Example: Episode 1">
+
+      <label for="customEpisodeUrl">Direct video URL or YouTube link</label>
+      <input id="customEpisodeUrl" type="url"
+        placeholder="https://www.youtube.com/watch?v=VIDEO_ID">
+
+      <div class="controls">
+        <button id="saveEpisodeButton">Save Episode</button>
+        <button id="cancelEpisodeButton" class="secondary">Cancel</button>
+      </div>
+
+      <p style="margin-top:12px;font-size:13px;">
+        YouTube links and direct video URLs are supported. Some websites block
+        embedding, and some YouTube videos do not allow embedding.
+      </p>
+    </div>
+  </section>
+
+  <section class="info-card">
+    <h2>🔗 Load a Video</h2>
+    <p>
+      Paste a YouTube video link or a direct video URL.
+      You can also choose a video file from your computer.
+    </p>
+
+    <label for="videoUrl">Video URL</label>
+    <input id="videoUrl" type="url"
+      placeholder="YouTube link or https://example.com/video.mp4">
+
+    <div class="controls">
+      <button id="loadUrlButton">Load Video</button>
+      <label class="file-label" for="localVideoFile">Choose Video From Computer</label>
+      <input id="localVideoFile" class="hidden" type="file" accept="video/*">
+    </div>
+
+    <p style="margin-top:12px;font-size:13px;">
+      A local file plays only on your device. It is not uploaded to GitHub Pages.
+    </p>
+  </section>
+</main>
+
+<footer>WATCH YOUR TYPE ANIME · Video player demo</footer>
+
+<script>
+const DEMO_VIDEO =
+  "https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4";
+
+const STORAGE_KEY = "wtya_custom_episodes";
+const $ = id => document.getElementById(id);
+
+const player = $("videoPlayer");
+const youtubePlayer = $("youtubePlayer");
+
+let currentIndex = 0;
+let objectUrl = null;
+let activeMode = "video";
+
+const demoEpisodes = [
+  { name: "Demo Episode 1", url: DEMO_VIDEO, demo: true }
+];
+
+function getCustomEpisodes() {
+  try {
+    const value = JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
+    return Array.isArray(value)
+      ? value.filter(ep =>
+          ep &&
+          typeof ep.name === "string" &&
+          typeof ep.url === "string" &&
+          /^https?:\/\//i.test(ep.url)
+        )
+      : [];
+  } catch {
+    return [];
+  }
+}
+
+function allEpisodes() {
+  return [...demoEpisodes, ...getCustomEpisodes()];
+}
+
+function safeHttpUrl(value) {
+  try {
+    const url = new URL(value);
+    if (url.protocol !== "https:" && url.protocol !== "http:") return null;
+    return url.href;
+  } catch {
+    return null;
+  }
+}
+
+function getYouTubeId(value) {
+  try {
+    const url = new URL(value);
+    const host = url.hostname.replace(/^www\./, "").toLowerCase();
+
+    if (host === "youtu.be") {
+      return url.pathname.split("/").filter(Boolean)[0] || null;
+    }
+
+    if (
+      host === "youtube.com" ||
+      host === "m.youtube.com" ||
+      host === "youtube-nocookie.com"
+    ) {
+      if (url.pathname === "/watch") {
+        return url.searchParams.get("v");
+      }
+
+      const match = url.pathname.match(/^\/(?:embed|shorts|live)\/([^/?]+)/);
+      return match ? match[1] : null;
+    }
+  } catch {
+    return null;
+  }
+
+  return null;
+}
+
+function releaseObjectUrl() {
+  if (objectUrl) {
+    URL.revokeObjectURL(objectUrl);
+    objectUrl = null;
+  }
+}
+
+function escapeHTML(value) {
+  return String(value).replace(/[&<>"']/g, character => ({
+    "&": "&amp;",
+    "<": "&lt;",
+    ">": "&gt;",
+    '"': "&quot;",
+    "'": "&#39;"
+  })[character]);
+}
+
+function renderEpisodes() {
+  const episodes = allEpisodes();
+
+  $("episodeList").innerHTML = episodes.map((episode, index) => `
+    <button class="episode ${index === currentIndex ? "active" : ""}"
+      data-index="${index}">
+      ${escapeHTML(episode.name)}
+      <small>${episode.demo ? "Public demo clip" : "Saved video link"}</small>
+    </button>
+  `).join("");
+
+  $("episodeList").querySelectorAll("button").forEach(button => {
+    button.addEventListener("click", () => {
+      playEpisode(Number(button.dataset.index));
+    });
+  });
+}
+
+function loadSource(rawUrl, title) {
+  const url = safeHttpUrl(rawUrl);
+
+  if (!url && !rawUrl.startsWith("blob:")) {
+    $("playerStatus").textContent = "Please enter a valid video URL.";
+    return;
+  }
+
+  player.pause();
+  youtubePlayer.src = "about:blank";
+  releaseObjectUrl();
+
+  const youtubeId = getYouTubeId(rawUrl);
+
+  if (youtubeId && /^[a-zA-Z0-9_-]{11}$/.test(youtubeId)) {
+    activeMode = "youtube";
+
+    player.classList.add("hidden");
+    youtubePlayer.classList.remove("hidden");
+    player.removeAttribute("src");
+    player.load();
+
+    youtubePlayer.src =
+      "https://www.youtube-nocookie.com/embed/" +
+      encodeURIComponent(youtubeId) +
+      "?rel=0";
+
+    $("playButton").classList.add("hidden");
+    $("episodeTitle").textContent = title;
+    $("playerStatus").textContent =
+      "YouTube video loaded. Use the controls inside the video player.";
+    return;
+  }
+
+  activeMode = "video";
+  youtubePlayer.classList.add("hidden");
+  player.classList.remove("hidden");
+  $("playButton").classList.remove("hidden");
+
+  player.src = url || rawUrl;
+  player.load();
+
+  $("episodeTitle").textContent = title;
+  $("playerStatus").textContent = "Video loaded. Press Play to start.";
+}
+
+function playEpisode(index) {
+  const episodes = allEpisodes();
+  if (index < 0 || index >= episodes.length) return;
+
+  currentIndex = index;
+  const episode = episodes[index];
+
+  $("animeTitle").textContent = "Anime Video Player";
+  loadSource(episode.url, episode.name);
+  renderEpisodes();
+}
+
+$("playButton").addEventListener("click", () => {
+  if (activeMode !== "video") return;
+
+  if (player.paused) {
+    player.play().catch(() => {
+      $("playerStatus").textContent =
+        "Playback could not start. Check the URL and video format.";
+    });
+  } else {
+    player.pause();
+  }
+});
+
+player.addEventListener("play", () => {
+  $("playButton").textContent = "⏸ Pause";
+  if (activeMode === "video") {
+    $("playerStatus").textContent = "Video is playing.";
+  }
+});
+
+player.addEventListener("pause", () => {
+  $("playButton").textContent = "▶ Play";
+});
+
+player.addEventListener("ended", () => {
+  $("playerStatus").textContent = "Episode finished.";
+});
+
+player.addEventListener("error", () => {
+  if (activeMode === "video") {
+    $("playerStatus").textContent =
+      "Could not play this video. The link may be unavailable, blocked, or in an unsupported format.";
+  }
+});
+
+$("previousButton").addEventListener("click", () => {
+  playEpisode(Math.max(0, currentIndex - 1));
+});
+
+$("nextButton").addEventListener("click", () => {
+  playEpisode(Math.min(allEpisodes().length - 1, currentIndex + 1));
+});
+
+$("addEpisodeButton").addEventListener("click", () => {
+  $("customEpisodeForm").classList.remove("hidden");
+});
+
+$("cancelEpisodeButton").addEventListener("click", () => {
+  $("customEpisodeForm").classList.add("hidden");
+});
+
+$("saveEpisodeButton").addEventListener("click", () => {
+  const name = $("customEpisodeName").value.trim();
+  const url = safeHttpUrl($("customEpisodeUrl").value.trim());
+
+  if (!name || !url) {
+    alert("Enter an episode name and a valid HTTP or HTTPS URL.");
+    return;
+  }
+
+  const episodes = getCustomEpisodes();
+  episodes.push({ name, url });
+
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(episodes));
+  } catch {
+    alert("Could not save this link in your browser.");
+    return;
+  }
+
+  $("customEpisodeName").value = "";
+  $("customEpisodeUrl").value = "";
+  $("customEpisodeForm").classList.add("hidden");
+
+  renderEpisodes();
+  $("playerStatus").textContent =
+    "Link saved in this browser. Select it from the Episodes list.";
+});
+
+$("clearCustomButton").addEventListener("click", () => {
+  if (!confirm("Remove all your saved video links from this browser?")) return;
+
+  localStorage.removeItem(STORAGE_KEY);
+  currentIndex = 0;
+  playEpisode(0);
+});
+
+$("loadUrlButton").addEventListener("click", () => {
+  const url = safeHttpUrl($("videoUrl").value.trim());
+
+  if (!url) {
+    alert("Enter a valid HTTP or HTTPS video URL.");
+    return;
+  }
+
+  currentIndex = -1;
+  loadSource(url, "Custom Video");
+  renderEpisodes();
+});
+
+$("localVideoFile").addEventListener("change", event => {
+  const file = event.target.files[0];
+  if (!file) return;
+
+  if (!file.type.startsWith("video/")) {
+    alert("Please select a video file.");
+    return;
+  }
+
+  player.pause();
+  youtubePlayer.src = "about:blank";
+  releaseObjectUrl();
+
+  objectUrl = URL.createObjectURL(file);
+  currentIndex = -1;
+  activeMode = "video";
+
+  youtubePlayer.classList.add("hidden");
+  player.classList.remove("hidden");
+  $("playButton").classList.remove("hidden");
+
+  player.src = objectUrl;
+  player.load();
+
+  $("episodeTitle").textContent = file.name;
+  $("playerStatus").textContent =
+    "Local video selected. Press Play. It is not uploaded or shared online.";
+
+  renderEpisodes();
+});
+
+window.addEventListener("beforeunload", releaseObjectUrl);
+
+renderEpisodes();
+playEpisode(0);
+</script>
+</body>
+</html>

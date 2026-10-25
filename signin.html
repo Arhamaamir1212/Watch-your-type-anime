@@ -1,0 +1,117 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#080611">
+<title>Sign In | WATCH YOUR TYPE</title>
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+  min-height:100vh;display:grid;place-items:center;padding:24px;
+  font-family:Arial,sans-serif;color:#f5f3ff;background:#080611;
+  background-image:radial-gradient(ellipse at 15% 10%,#6718a544,transparent 45%),
+  radial-gradient(ellipse at 90% 80%,#006bff30,transparent 45%);
+}
+a{color:#67e8f9;text-decoration:none}
+a:hover{text-decoration:underline}
+.panel{
+  width:100%;max-width:440px;padding:34px;
+  background:#110d20;border:1px solid #a855f766;
+  border-radius:18px;box-shadow:0 0 40px #7c2bd922;
+}
+.logo{text-align:center;font-weight:900;font-size:25px;letter-spacing:1px}
+.logo span{color:#a855f7}
+.tag{text-align:center;color:#00d9ff;font-size:10px;letter-spacing:4px;margin:8px 0 28px}
+h1{text-align:center;font-size:27px;margin-bottom:10px}
+.intro{text-align:center;color:#aaa4c2;font-size:14px;line-height:1.6;margin-bottom:24px}
+label{display:block;font-size:13px;margin:16px 0 8px}
+input{
+  width:100%;padding:13px;border:1px solid #44345f;border-radius:8px;
+  background:#080611;color:white;outline:none
+}
+input:focus{border-color:#00d9ff;box-shadow:0 0 10px #00d9ff22}
+button{
+  width:100%;padding:14px;margin-top:22px;border:1px solid #a855f7;
+  border-radius:8px;background:linear-gradient(110deg,#7c2bd9,#4220a8);
+  color:white;font-weight:bold;cursor:pointer
+}
+button:disabled{opacity:.6;cursor:wait}
+.message{font-size:13px;line-height:1.6;margin-top:16px;overflow-wrap:anywhere}
+.bottom{text-align:center;color:#aaa4c2;font-size:13px;line-height:1.9;margin-top:22px}
+.home{display:block;text-align:center;margin-top:20px;font-size:13px}
+</style>
+</head>
+
+<body>
+<main class="panel">
+  <div class="logo">WATCH YOUR <span>TYPE</span></div>
+  <div class="tag">ANIME DISCOVERY</div>
+
+  <h1>Welcome Back</h1>
+  <p class="intro">Sign in and continue discovering your next favorite anime.</p>
+
+  <form id="signin-form">
+    <label for="email">Email address</label>
+    <input id="email" type="email" autocomplete="email"
+      required placeholder="you@example.com">
+
+    <label for="password">Password</label>
+    <input id="password" type="password" autocomplete="current-password"
+      required placeholder="Your password">
+
+    <button id="submit-btn" type="submit">SIGN IN ⚡</button>
+    <p id="message" class="message" role="status" aria-live="polite"></p>
+  </form>
+
+  <p class="bottom">
+    New here? <a href="create.html">Create an account</a>
+  </p>
+  <a class="home" href="index.html">← Back to homepage</a>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+const SUPABASE_URL = "https://xezlemrleidboykfpguj.supabase.co";
+const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_3ongiDvHgGJtRGIEeDogUA_K-58Rbi1";
+
+const client = window.supabase.createClient(
+  SUPABASE_URL,
+  SUPABASE_PUBLISHABLE_KEY
+);
+
+const form = document.getElementById("signin-form");
+const message = document.getElementById("message");
+const button = document.getElementById("submit-btn");
+
+form.addEventListener("submit", async (event) => {
+  event.preventDefault();
+  message.textContent = "";
+  button.disabled = true;
+  button.textContent = "SIGNING IN...";
+
+  const email = document.getElementById("email").value.trim();
+  const password = document.getElementById("password").value;
+
+  try {
+    const { error } = await client.auth.signInWithPassword({
+      email,
+      password
+    });
+
+    if (error) throw error;
+
+    window.location.href = new URL("index.html", window.location.href).href;
+  } catch (error) {
+    message.textContent =
+      error.message || "Sign-in failed. Please check your details and try again.";
+  } finally {
+    button.disabled = false;
+    button.textContent = "SIGN IN ⚡";
+  }
+});
+</script>
+</body>
+</html>
