@@ -4,136 +4,474 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="theme-color" content="#080611">
-<title>Create Account | WATCH YOUR TYPE</title>
+
+<title>WATCH YOUR TYPE ANIME — Create Account</title>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <style>
-*{box-sizing:border-box;margin:0;padding:0}
-body{
-  min-height:100vh;display:grid;place-items:center;padding:24px;
-  font-family:Arial,sans-serif;color:#f5f3ff;background:#080611;
-  background-image:radial-gradient(ellipse at 15% 10%,#6718a544,transparent 45%),
-  radial-gradient(ellipse at 90% 80%,#006bff30,transparent 45%);
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: Arial, Helvetica, sans-serif;
 }
-a{color:#67e8f9;text-decoration:none}
-a:hover{text-decoration:underline}
-.panel{
-  width:100%;max-width:440px;padding:34px;
-  background:#110d20;border:1px solid #a855f766;
-  border-radius:18px;box-shadow:0 0 40px #7c2bd922;
+
+:root {
+    --purple: #b44cff;
+    --cyan: #00e5ff;
+    --dark: #080612;
 }
-.logo{text-align:center;font-weight:900;font-size:25px;letter-spacing:1px}
-.logo span{color:#a855f7}
-.tag{text-align:center;color:#00d9ff;font-size:10px;letter-spacing:4px;margin:8px 0 28px}
-h1{text-align:center;font-size:27px;margin-bottom:10px}
-.intro{text-align:center;color:#aaa4c2;font-size:14px;line-height:1.6;margin-bottom:24px}
-label{display:block;font-size:13px;margin:16px 0 8px}
-input{
-  width:100%;padding:13px;border:1px solid #44345f;border-radius:8px;
-  background:#080611;color:white;outline:none
+
+body {
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 25px 15px;
+    color: white;
+    background:
+        radial-gradient(ellipse at 15% 15%, #42166d 0, transparent 40%),
+        radial-gradient(ellipse at 90% 85%, #063b55 0, transparent 40%),
+        #080612;
+    overflow-x: hidden;
 }
-input:focus{border-color:#00d9ff;box-shadow:0 0 10px #00d9ff22}
-button{
-  width:100%;padding:14px;margin-top:22px;border:1px solid #a855f7;
-  border-radius:8px;background:linear-gradient(110deg,#7c2bd9,#4220a8);
-  color:white;font-weight:bold;cursor:pointer
+
+body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    opacity: .22;
+    background-image:
+        linear-gradient(#a64dff20 1px, transparent 1px),
+        linear-gradient(90deg, #a64dff20 1px, transparent 1px);
+    background-size: 40px 40px;
 }
-button:disabled{opacity:.6;cursor:wait}
-.message{font-size:13px;line-height:1.6;margin-top:16px;overflow-wrap:anywhere}
-.bottom{text-align:center;color:#aaa4c2;font-size:13px;line-height:1.9;margin-top:22px}
-.home{display:block;text-align:center;margin-top:20px;font-size:13px}
-.note{font-size:11px;color:#89819f;line-height:1.6;margin-top:16px}
-@media(max-width:420px){.panel{padding:24px 20px}}
+
+.container {
+    width: 100%;
+    max-width: 440px;
+    position: relative;
+    z-index: 1;
+    text-align: center;
+}
+
+.logo {
+    margin-bottom: 25px;
+}
+
+.logo-icon {
+    font-size: 45px;
+    margin-bottom: 8px;
+    filter: drop-shadow(0 0 15px var(--purple));
+}
+
+.logo h1 {
+    font-size: clamp(25px, 6vw, 35px);
+    font-weight: 900;
+    letter-spacing: 1px;
+    text-shadow: 0 0 20px #b44cff66;
+}
+
+.logo h1 span {
+    color: var(--cyan);
+}
+
+.logo p {
+    margin-top: 9px;
+    font-size: 11px;
+    letter-spacing: 4px;
+    color: #bdb1d5;
+}
+
+.card {
+    text-align: left;
+    padding: 32px;
+    border-radius: 18px;
+    background: linear-gradient(145deg, #171027f5, #0d1424f5);
+    border: 1px solid #a64dff66;
+    box-shadow:
+        0 0 35px #8b2be533,
+        inset 0 0 25px #ffffff04;
+}
+
+.card h2 {
+    font-size: 29px;
+    margin-bottom: 9px;
+}
+
+.subtitle {
+    color: #b8b0ca;
+    font-size: 14px;
+    line-height: 1.6;
+    margin-bottom: 25px;
+}
+
+.input-box {
+    position: relative;
+    margin-bottom: 16px;
+}
+
+.input-box input {
+    width: 100%;
+    height: 51px;
+    padding: 0 48px 0 15px;
+    border-radius: 9px;
+    border: 1px solid #46345f;
+    outline: none;
+    color: white;
+    background: #080713;
+    font-size: 14px;
+    transition: .2s;
+}
+
+.input-box input:focus {
+    border-color: var(--cyan);
+    box-shadow: 0 0 13px #00e5ff22;
+}
+
+.input-box input::placeholder {
+    color: #8d849f;
+}
+
+.password-icon {
+    position: absolute;
+    right: 14px;
+    top: 16px;
+    cursor: pointer;
+    user-select: none;
+}
+
+.terms {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    margin: 18px 0;
+    color: #c5bdd5;
+    font-size: 12px;
+    line-height: 1.6;
+}
+
+.terms input {
+    margin-top: 3px;
+    accent-color: var(--purple);
+}
+
+a {
+    color: var(--cyan);
+    text-decoration: none;
+}
+
+a:hover {
+    color: #d7a5ff;
+}
+
+.create-btn {
+    width: 100%;
+    min-height: 51px;
+    border: none;
+    border-radius: 9px;
+    color: #090513;
+    background: linear-gradient(100deg, var(--purple), var(--cyan));
+    font-size: 13px;
+    font-weight: 900;
+    letter-spacing: 1px;
+    cursor: pointer;
+    transition: .2s;
+}
+
+.create-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 0 22px #a64dff66;
+}
+
+.create-btn:disabled {
+    opacity: .6;
+    cursor: wait;
+    transform: none;
+}
+
+.message {
+    display: none;
+    margin-top: 16px;
+    padding: 12px;
+    border-radius: 8px;
+    font-size: 13px;
+    line-height: 1.5;
+    overflow-wrap: anywhere;
+}
+
+.message.error {
+    display: block;
+    color: #ffb4c0;
+    background: #5c172c55;
+    border: 1px solid #ff537555;
+}
+
+.message.success {
+    display: block;
+    color: #9dffe0;
+    background: #10483755;
+    border: 1px solid #43e7b255;
+}
+
+.divider {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    color: #8f86a4;
+    font-size: 12px;
+    margin: 23px 0;
+}
+
+.divider::before,
+.divider::after {
+    content: "";
+    flex: 1;
+    height: 1px;
+    background: #40334f;
+}
+
+.login-text {
+    text-align: center;
+    font-size: 13px;
+    color: #c5bdd5;
+    line-height: 1.8;
+}
+
+.login-text a {
+    font-weight: bold;
+}
+
+footer {
+    margin-top: 24px;
+    color: #8b819f;
+    font-size: 11px;
+    line-height: 2;
+}
+
+footer .credit {
+    color: var(--purple);
+    font-weight: bold;
+    letter-spacing: 2px;
+}
+
+@media (max-width: 480px) {
+    .card {
+        padding: 24px 19px;
+    }
+
+    .card h2 {
+        font-size: 26px;
+    }
+}
 </style>
 </head>
 
 <body>
-<main class="panel">
-  <div class="logo">WATCH YOUR <span>TYPE</span></div>
-  <div class="tag">ANIME DISCOVERY</div>
 
-  <h1>Create Account</h1>
-  <p class="intro">Join the anime universe. Your next favorite story awaits!</p>
+<main class="container">
 
-  <form id="signup-form">
-    <label for="username">Username</label>
-    <input id="username" name="username" type="text"
-      minlength="3" maxlength="24" autocomplete="nickname"
-      pattern="[A-Za-z0-9_]+" title="Use letters, numbers, and underscores only"
-      required placeholder="YourAnimeName">
+    <div class="logo">
+        <div class="logo-icon">🌌</div>
+        <h1>WATCH YOUR <span>TYPE</span></h1>
+        <p>ANIME DISCOVERY UNIVERSE</p>
+    </div>
 
-    <label for="email">Email address</label>
-    <input id="email" name="email" type="email"
-      autocomplete="email" required placeholder="you@example.com">
+    <section class="card">
+        <h2>Create Account <span>✦</span></h2>
+        <p class="subtitle">
+            Join the anime universe. Discover your next favorite story!
+        </p>
 
-    <label for="password">Password</label>
-    <input id="password" name="password" type="password"
-      minlength="8" autocomplete="new-password"
-      required placeholder="At least 8 characters">
+        <form id="signupForm">
+            <div class="input-box">
+                <input
+                    type="text"
+                    id="username"
+                    placeholder="Choose a username"
+                    minlength="3"
+                    maxlength="24"
+                    autocomplete="username"
+                    required
+                >
+            </div>
 
-    <button id="submit-btn" type="submit">CREATE MY ACCOUNT ✨</button>
-    <p id="message" class="message" role="status" aria-live="polite"></p>
-  </form>
+            <div class="input-box">
+                <input
+                    type="email"
+                    id="email"
+                    placeholder="Email address"
+                    autocomplete="email"
+                    required
+                >
+            </div>
 
-  <p class="bottom">
-    Already have an account? <a href="signin.html">Sign in</a>
-  </p>
-  <a class="home" href="index.html">← Back to homepage</a>
-  <p class="note">Your password is handled by Supabase Authentication.
-  Never reuse a password you use on another important account.</p>
+            <div class="input-box">
+                <input
+                    type="password"
+                    id="password"
+                    placeholder="Create password (at least 8 characters)"
+                    minlength="8"
+                    autocomplete="new-password"
+                    required
+                >
+                <span class="password-icon"
+                    onclick="togglePassword('password', this)">👁</span>
+            </div>
+
+            <div class="input-box">
+                <input
+                    type="password"
+                    id="confirmPassword"
+                    placeholder="Confirm password"
+                    minlength="8"
+                    autocomplete="new-password"
+                    required
+                >
+                <span class="password-icon"
+                    onclick="togglePassword('confirmPassword', this)">👁</span>
+            </div>
+
+            <label class="terms">
+                <input type="checkbox" id="terms" required>
+                <span>
+                    I agree to the
+                    <a href="#" onclick="return false;">Terms &amp; Conditions</a>
+                    and confirm my information is correct.
+                </span>
+            </label>
+
+            <button class="create-btn" id="createBtn" type="submit">
+                CREATE ACCOUNT &nbsp; →
+            </button>
+
+            <div class="message" id="message" role="status"
+                aria-live="polite"></div>
+        </form>
+
+        <div class="divider">ALREADY PART OF THE UNIVERSE?</div>
+
+        <div class="login-text">
+            Already have an account?
+            <a href="signin.html"> SIGN IN →</a>
+        </div>
+    </section>
+
+    <footer>
+        <div class="credit">WATCH YOUR TYPE ANIME</div>
+        <div>Discover your vibe. Find your next story.</div>
+        <div>Created with ✦ for anime fans</div>
+    </footer>
+
 </main>
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
 const SUPABASE_URL = "https://xezlemrleidboykfpguj.supabase.co";
-const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_3ongiDvHgGJtRGIEeDogUA_K-58Rbi1";
+const SUPABASE_KEY = "sb_publishable_3ongiDvHgGJtRGIEeDogUA_K-58Rbi1";
 
-const client = window.supabase.createClient(
-  SUPABASE_URL,
-  SUPABASE_PUBLISHABLE_KEY
+const supabaseClient = window.supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_KEY
 );
 
-const form = document.getElementById("signup-form");
-const message = document.getElementById("message");
-const button = document.getElementById("submit-btn");
+function togglePassword(id, icon) {
+    const input = document.getElementById(id);
 
-form.addEventListener("submit", async (event) => {
-  event.preventDefault();
-  message.textContent = "";
-  button.disabled = true;
-  button.textContent = "CREATING ACCOUNT...";
-
-  const username = document.getElementById("username").value.trim();
-  const email = document.getElementById("email").value.trim();
-  const password = document.getElementById("password").value;
-
-  try {
-    const { data, error } = await client.auth.signUp({
-      email,
-      password,
-      options: {
-        data: { username },
-        emailRedirectTo: new URL("index.html", window.location.href).href
-      }
-    });
-
-    if (error) throw error;
-
-    if (data.session) {
-      message.textContent = "Account created! Welcome to WATCH YOUR TYPE.";
-      window.location.href = new URL("index.html", window.location.href).href;
+    if (input.type === "password") {
+        input.type = "text";
+        icon.textContent = "🙈";
     } else {
-      message.textContent =
-        "Almost done! Check your email for the confirmation link. Confirm your email, then sign in.";
-      form.reset();
+        input.type = "password";
+        icon.textContent = "👁";
     }
-  } catch (error) {
-    message.textContent = error.message || "Could not create your account. Please try again.";
-  } finally {
-    button.disabled = false;
-    button.textContent = "CREATE MY ACCOUNT ✨";
-  }
+}
+
+function showMessage(text, type) {
+    const box = document.getElementById("message");
+    box.textContent = text;
+    box.className = "message " + type;
+}
+
+document.getElementById("signupForm").addEventListener("submit", async function(event) {
+    event.preventDefault();
+
+    const username = document.getElementById("username").value.trim();
+    const email = document.getElementById("email").value.trim();
+    const password = document.getElementById("password").value;
+    const confirmPassword = document.getElementById("confirmPassword").value;
+    const terms = document.getElementById("terms").checked;
+    const button = document.getElementById("createBtn");
+
+    if (username.length < 3) {
+        showMessage("Your username must have at least 3 characters.", "error");
+        return;
+    }
+
+    if (password.length < 8) {
+        showMessage("Your password must have at least 8 characters.", "error");
+        return;
+    }
+
+    if (password !== confirmPassword) {
+        showMessage("Your passwords do not match. Try again!", "error");
+        return;
+    }
+
+    if (!terms) {
+        showMessage("Please agree to the terms before continuing.", "error");
+        return;
+    }
+
+    button.disabled = true;
+    button.textContent = "CREATING YOUR ACCOUNT...";
+    showMessage("", "success");
+
+    try {
+        const redirectUrl = new URL("index.html", window.location.href).href;
+
+        const { data, error } = await supabaseClient.auth.signUp({
+            email: email,
+            password: password,
+            options: {
+                emailRedirectTo: redirectUrl,
+                data: {
+                    username: username
+                }
+            }
+        });
+
+        if (error) throw error;
+
+        if (data.user && data.user.identities &&
+            data.user.identities.length === 0) {
+            showMessage(
+                "This email may already be registered. Try signing in instead.",
+                "error"
+            );
+        } else if (data.session) {
+            showMessage("Account created! Opening the anime universe...", "success");
+            window.location.href = "index.html";
+            return;
+        } else {
+            showMessage(
+                "Account created! Check your email to confirm your account, then sign in.",
+                "success"
+            );
+        }
+
+    } catch (error) {
+        showMessage(
+            error.message || "Something went wrong. Please try again.",
+            "error"
+        );
+    } finally {
+        button.disabled = false;
+        button.textContent = "CREATE ACCOUNT →";
+    }
 });
 </script>
+
 </body>
 </html>
